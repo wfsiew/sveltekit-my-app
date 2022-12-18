@@ -23,17 +23,6 @@ export const actions = {
       });
       return fail(400, { email, error: true, errors });
     }
-    // if (!email && !password) {
-    //     return fail(400, { email, missing: true, message: ['Email field is required.', 'Password field is required.']})
-    // }
-
-    // if (!email) {
-    //     return fail(400, { email, missingEmail: true, message: 'Email field is required.' });
-    // }
-
-    // if (!password) {
-    //     return fail(400, { email, missingPw: true, message: 'Password field is required.' });
-    // }
 
     throw redirect(302, '/');
 
