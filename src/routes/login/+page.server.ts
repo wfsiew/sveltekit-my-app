@@ -6,10 +6,18 @@ const loginSchema = z.object({
   password: z.string().trim().min(1, { message: 'Password field is required.' })
 });
 
+/** @type {import('./$types').PageServerLoad} */
+export async function load(event) {
+  const user = event.locals.user;
+  if (user) {
+    throw redirect(302, '/');
+  }
+}
+
 /** @type {import('./$types').Actions} */
 export const actions = {
-  default: async ({ request }) => {
-    const data = await request.formData();
+  default: async (event) => {
+    const data = await event.request.formData();
     const x = Object.fromEntries(data);
     const a = await loginSchema.safeParseAsync(x);
     const email = data.get('email');
@@ -24,6 +32,13 @@ export const actions = {
       return fail(400, { email, error: true, errors });
     }
 
+    event.cookies.set('token', 'aaa', {
+      httpOnly: true,
+			path: '/',
+			secure: true,
+			sameSite: 'strict',
+			maxAge: 60 * 60 * 24
+    });
     throw redirect(302, '/');
 
     // return {
